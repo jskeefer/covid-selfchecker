@@ -30,6 +30,11 @@ export default {
   created() {
     store.init().then( (result) =>{
       if( result ){
+        //redirect to home page on a page refresh
+        console.log(this.$route.path);
+        if(this.$route.path !== '/1'){
+          this.$router.push({ path:  '/1' })
+        }
         this.loading = false;
       }else{
         this.loadingMessage = "OOPS! Something went wrong, please refresh the page";
@@ -37,11 +42,10 @@ export default {
     });
   },
   updated() {
-    //console.log(this.$route);
+
   },
   watch: {
     $route(to) {
-      //console.log(to.path.split('/').pop());
       this.sharedState.activeNodeId = to.path.split('/').pop();
     }
   }

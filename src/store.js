@@ -2,9 +2,9 @@ export default {
 
   state: {
     survey: {},
-    activeNodeId: 1
+    activeNodeId: 1,
+    variables: {}
   },
-
   async init() {
     try{
       const response = await fetch('https://zt-eng.s3.us-east-1.amazonaws.com/fe-challenge/survey.json');
