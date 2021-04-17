@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import store from './store'
+import store from './store';
 
 export default {
   name: 'Survey',
@@ -19,7 +19,7 @@ export default {
     return {
       sharedState: store.state,
       loading: true,
-      loadingMessage: "Loading..."
+      loadingMessage: 'Loading...'
     }
   },
   computed: {
@@ -28,25 +28,42 @@ export default {
     },
   },
   created() {
-    store.init().then( (result) =>{
+    // call init function of store and
+    store.init().then( ( result ) =>{
       if( result ){
+        this.formatData();
         //redirect to home page on a page refresh
-        console.log(this.$route.path);
-        if(this.$route.path !== '/1'){
-          this.$router.push({ path:  '/1' })
+        if( this.$route.path !== '/1' ){
+          this.$router.push( { path:  '/1' } );
         }
         this.loading = false;
       }else{
-        this.loadingMessage = "OOPS! Something went wrong, please refresh the page";
+        this.loadingMessage = 'OOPS! Something went wrong, please refresh the page';
       }
     });
   },
-  updated() {
-
-  },
   watch: {
-    $route(to) {
-      this.sharedState.activeNodeId = to.path.split('/').pop();
+    // watch for route changes and get the last item in the path, set to activeNodeId
+    $route( to ) {
+      this.sharedState.activeNodeId = to.path.split( '/' ).pop();
+    }
+  },
+  methods: {
+    // format data to correct data error in API
+    formatData(){
+      // switch nodes 1,2 to go to 4 to fix data error
+      this.sharedState.survey.nodes[ 1 ].buttons[ 0 ].target_node_id = '4';
+      this.sharedState.survey.nodes[ 2 ].buttons[ 0 ].target_node_id = '4';
+      // change target of node 4 to go to 3
+      this.sharedState.survey.nodes[ 4 ].buttons[ 0 ].target_node_id = '3';
+      this.sharedState.survey.nodes[ 4 ].buttons[ 1 ].target_node_id = '3';
+      // change target of 3 to go to 5
+      this.sharedState.survey.nodes[ 3 ].buttons[ 0 ].target_node_id = '5';
+      // change the text of node 3
+      this.sharedState.survey.nodes[ 3 ].content = 'Are #user_profile# ill?';
+
+      // uncomment this line to test the required fields
+      // this.sharedState.survey.nodes[ 6 ].formfields[ 0 ].required = '1;
     }
   }
 }

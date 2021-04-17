@@ -1,5 +1,4 @@
 export default {
-
   state: {
     survey: {},
     activeNodeId: 1,
@@ -7,13 +6,13 @@ export default {
   },
   async init() {
     try{
-      const response = await fetch('https://zt-eng.s3.us-east-1.amazonaws.com/fe-challenge/survey.json');
+      const response = await fetch( process.env.VUE_APP_API_URL );
       const data = await response.json();
       this.state.survey = data;
       return true;
     }
-    catch(e){
-      console.log(e);
+    catch( e ){
+      console.error( e );
       return false;
     }
   },
