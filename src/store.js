@@ -4,7 +4,7 @@ export default {
     activeNodeId: 1,
     variables: {}
   },
-  async init() {
+  async getSurveyData() {
     try{
       const response = await fetch( process.env.VUE_APP_API_URL );
       const data = await response.json();

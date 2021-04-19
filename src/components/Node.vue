@@ -67,12 +67,18 @@ export default {
     },
     // validate each form field and disable the next button
     validateFormFields(){
+      const isRequired = {
+        '0': () => { return false; },
+        '1': ( field ) => { return !this.variables[ field.name ] || this.variables[ field.name ] === '0';  },
+        // add more requirements here such as a logic dependent node
+      };
       let isDisabled = false;
-      this.formFields.forEach( ( field ) => {
-        if( field.required === '1' ){
-          !this.variables[ field.name ] ? isDisabled = true : '';
+      this.formFields.some( ( field ) => {
+        if( isRequired[ field.required ]( field ) ){
+          isDisabled = true;
+          return true;
         }
-      })
+      });
       return isDisabled;
     },
   },
@@ -111,10 +117,10 @@ export default {
     },
     // replace all variables that might be in the content or title
     templateVars( string ){
-      for( let prop in this.variables ) {
-        string = string.replace( new RegExp( '#' + prop + '#', 'g' ), this.variables[ prop ] );
-      }
-      return string;
+      let newString = string.replace(/#(.*?)#/g, ( match, variable ) => {
+        return this.variables[ variable ];
+      });
+      return newString;
     }
   }
 }
@@ -153,11 +159,12 @@ a.btn.disabled {
 }
 
 a.btn .col-2 {
-  width: 50%;
+    width: 50%;
 }
 
 .nodeContent {
-  text-align: justify;
+    text-align: justify;
+    margin-bottom: 4px;
 }
 
 .nodeQuestion {
@@ -166,5 +173,13 @@ a.btn .col-2 {
     font-style: italic;
     padding: 10px;
     margin-top: 20px;
+}
+
+select {
+    padding: 6px;
+}
+
+label {
+    padding: 6px;
 }
 </style>
